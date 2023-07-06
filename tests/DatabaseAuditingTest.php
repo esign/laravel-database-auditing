@@ -1,8 +1,8 @@
 <?php
 
-namespace :vendor_namespace\Tests;
+namespace Esign\DatabaseAuditing\Tests;
 
-class :studly_package_nameTest extends TestCase
+class DatabaseAuditingTest extends TestCase
 {
     /** @test */
     public function test()

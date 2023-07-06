@@ -1,13 +1,13 @@
 <?php
 
-namespace :vendor_namespace\Facades;
+namespace Esign\DatabaseAuditing\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class :studly_package_nameFacade extends Facade
+class DatabaseAuditingFacade extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return ':package_name';
+        return 'database-auditing';
     }
 }
