@@ -113,6 +113,15 @@ $latestAudit->hasDataChanges('slug');
 The `hasDataChanges()` method returns a boolean value indicating whether any changes were made.
 If you pass a specific attribute name as an argument, it will check for changes in that particular attribute only.
 
+To retrieve audits based on specific trigger events, you can use the `event()` scope provided by the `Audit` model.
+Here's an example:
+```php
+use Esign\DatabaseAuditing\Models\Audit;
+use Esign\DatabaseTrigger\Enums\TriggerEvent;
+
+Audit::event(TriggerEvent::UPDATE)->first();
+```
+
 ### Tracking changes in Eloquent models
 
 To track changes related to your Eloquent model, apply the `Esign\DatabaseAuditing\Concerns\HasAudits` trait to the respective model. For instance:
