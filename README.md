@@ -100,6 +100,19 @@ use Esign\DatabaseAuditing\Models\Audit;
 $audits = Audit::query()->get();
 ```
 
+To determine if any data changes occurred in an audit, you can utilize the `hasDataChanges()` method available on the `Audit` model.
+Here's how you can use it:
+```php
+use Esign\DatabaseAuditing\Models\Audit;
+
+$latestAudit = Audit::latest()->first();
+$latestAudit->hasDataChanges();
+$latestAudit->hasDataChanges('slug');
+```
+
+The `hasDataChanges()` method returns a boolean value indicating whether any changes were made.
+If you pass a specific attribute name as an argument, it will check for changes in that particular attribute only.
+
 ### Tracking changes in Eloquent models
 
 To track changes related to your Eloquent model, apply the `Esign\DatabaseAuditing\Concerns\HasAudits` trait to the respective model. For instance:
