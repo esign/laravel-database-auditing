@@ -2,10 +2,13 @@
 
 namespace Esign\DatabaseAuditing\Commands;
 
+use Esign\DatabaseAuditing\AuditTriggerStatement;
+use Esign\DatabaseAuditing\Database\MySqlGrammar;
 use Esign\DatabaseTrigger\Commands\TriggerMakeCommand;
 use Esign\DatabaseTrigger\DatabaseTrigger;
 use Esign\DatabaseTrigger\Enums\TriggerEvent;
 use Esign\DatabaseTrigger\Enums\TriggerTiming;
+use Illuminate\Support\Composer;
 
 class AuditTriggerMakeCommand extends TriggerMakeCommand
 {
@@ -13,6 +16,14 @@ class AuditTriggerMakeCommand extends TriggerMakeCommand
         {--path= : The location where the migration file should be created}
         {--realpath : Indicate any provided migration file paths are pre-resolved absolute paths}
         {--fullpath : Output the full path of the migration}';
+    protected $description = 'Create a new audit trigger migration';
+
+    public function __construct(
+        MigrationCreator $creator,
+        Composer $composer
+    ) {
+        parent::__construct($creator, $composer);
+    }
 
     public function handle(): void
     {
@@ -28,81 +39,19 @@ class AuditTriggerMakeCommand extends TriggerMakeCommand
             ->on($triggerTable)
             ->event(TriggerEvent::from($triggerEvent))
             ->timing(TriggerTiming::from($triggerTiming))
-            ->statement($this->compileStatement(
-                TriggerEvent::from($triggerEvent),
-                $auditableType,
-                $auditableId,
-                $columnsToBeTracked,
-            ));
+            ->statement(function () use ($triggerEvent, $auditableType, $auditableId, $columnsToBeTracked) {
+                $auditTriggerStatement = new AuditTriggerStatement(
+                    TriggerEvent::from($triggerEvent),
+                    $auditableType,
+                    $auditableId,
+                    $columnsToBeTracked,
+                );
+
+                return (new MySqlGrammar())->compileAuditTriggerStatement($auditTriggerStatement);
+            });
 
         $this->writeMigration($trigger);
 
         $this->composer->dumpAutoloads();
-    }
-
-    protected function compileStatement(
-        TriggerEvent $triggerEvent,
-        string $auditableType,
-        string $auditableId,
-        array $columnsToBeTracked,
-    ): string {
-        [
-            'old' => $oldColumnsToBeTracked,
-            'new' => $newColumnsToBeTracked,
-        ] = $this->compileColmumnsToBeTrackedByTriggerEvent($triggerEvent, $columnsToBeTracked);
-        $auditableId = $this->compileAuditableIdByTriggerEvent($triggerEvent, $auditableId);
-
-        return "
-                INSERT INTO audits (
-                    event,
-                    auditable_type,
-                    auditable_id,
-                    old_data,
-                    new_data
-                )
-                VALUES (
-                    \"{$triggerEvent->value}\",
-                    \"{$auditableType}\",
-                    {$auditableId},
-                    {$oldColumnsToBeTracked},
-                    {$newColumnsToBeTracked}
-                );
-        ";
-    }
-
-    protected function compileAuditableIdByTriggerEvent(TriggerEvent $triggerEvent, string $auditableId): string
-    {
-        return match ($triggerEvent) {
-            TriggerEvent::UPDATE => "OLD.{$auditableId}",
-            TriggerEvent::INSERT => "NEW.{$auditableId}",
-            TriggerEvent::DELETE => "OLD.{$auditableId}",
-        };
-    }
-
-    protected function compileColmumnsToBeTrackedByTriggerEvent(TriggerEvent $triggerEvent, array $columnsToBeTracked): array
-    {
-        return match ($triggerEvent) {
-            TriggerEvent::UPDATE => [
-                'old' => $this->compileColumnsToBeTracked($columnsToBeTracked, 'OLD'),
-                'new' => $this->compileColumnsToBeTracked($columnsToBeTracked, 'NEW'),
-            ],
-            TriggerEvent::INSERT => [
-                'old' => 'NULL',
-                'new' => $this->compileColumnsToBeTracked($columnsToBeTracked, 'NEW'),
-            ],
-            TriggerEvent::DELETE => [
-                'old' => $this->compileColumnsToBeTracked($columnsToBeTracked, 'OLD'),
-                'new' => 'NULL',
-            ],
-        };
-    }
-
-    protected function compileColumnsToBeTracked(array $columnsToBeTracked, string $rowKeyword): string
-    {
-        $formattedColumnsToBeTracked = array_map(function (string $columnToBeTracked) use ($rowKeyword) {
-            return "\"{$columnToBeTracked}\", {$rowKeyword}.{$columnToBeTracked}";
-        }, $columnsToBeTracked);
-
-        return 'JSON_OBJECT(' . implode(', ', $formattedColumnsToBeTracked) . ')';
     }
 }
