@@ -16,8 +16,9 @@ trait MakesAuditTrigger
         string $auditableType,
         string $auditableId,
         array $columnsToBeTracked,
+        string $triggerName = null
     ): PendingCommand {
-        return $this->artisan(AuditTriggerMakeCommand::class)
+        return $this->artisan(AuditTriggerMakeCommand::class, ['name' => $triggerName])
             ->expectsQuestion('What should the trigger table be?', $triggerTable)
             ->expectsChoice('What should the trigger event be?', $triggerEvent->value, TriggerEvent::values())
             ->expectsChoice('What should the trigger timing be?', $triggerTiming->value, TriggerTiming::values())

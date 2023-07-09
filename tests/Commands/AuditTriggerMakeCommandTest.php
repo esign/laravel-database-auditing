@@ -142,4 +142,23 @@ class AuditTriggerMakeCommandTest extends TestCase
             'new_data' => null,
         ]);
     }
+
+    /** @test */
+    public function it_can_run_the_audit_trigger_command_using_a_custom_name()
+    {
+        $auditTriggerCommand = $this->makeAuditTrigger(
+            triggerName: 'my_trigger',
+            triggerTable: 'posts',
+            triggerEvent: TriggerEvent::UPDATE,
+            triggerTiming: TriggerTiming::AFTER,
+            auditableType: 'post',
+            auditableId: 'id',
+            columnsToBeTracked: ['title', 'slug'],
+        );
+
+        $auditTriggerCommand->run();
+        $this->artisan(MigrateCommand::class);
+
+        $this->assertTrue(Schema::hasTrigger('my_trigger'));
+    }
 }
