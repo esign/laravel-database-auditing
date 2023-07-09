@@ -1,6 +1,6 @@
 {
     "name": "esign/laravel-database-auditing",
-    "description": "Audit database changes in Laravel using database triggers.",
+    "description": "Track database changes in Laravel using database triggers.",
     "keywords": [
         "esign",
         "database-auditing"
