@@ -50,7 +50,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_the_database_trigger_when_the_command_is_executed()
+    public function it_can_create_a_database_trigger_when_the_command_is_executed()
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
             triggerTable: 'posts',
@@ -68,7 +68,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_audits_using_an_update_event()
+    public function it_can_create_an_audit_using_an_update_event()
     {
         $post = Post::create(['title' => 'My Title', 'slug' => 'my-title']);
         $auditTriggerCommand = $this->makeAuditTrigger(
@@ -94,7 +94,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_audits_using_an_insert_event()
+    public function it_can_create_an_audit_using_an_insert_event()
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
             triggerTable: 'posts',
@@ -118,7 +118,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_audits_using_a_delete_event()
+    public function it_can_create_an_audit_using_a_delete_event()
     {
         $post = Post::create(['title' => 'My Title', 'slug' => 'my-title']);
         $auditTriggerCommand = $this->makeAuditTrigger(
