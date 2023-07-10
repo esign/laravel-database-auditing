@@ -6,9 +6,9 @@
 
 This package allows you to track changes in your database using database triggers. Currently only MySQL is supported.
 
-**Note**
-This package is designed to track database changes that occur outside of Laravel.
-However, for changes originating within a Laravel application, other solutions like [owen-it/laravel-auditing](https://github.com/owen-it/laravel-auditing) may better suit your requirements.
+>**Note**
+> This package is designed to track database changes that occur outside of Laravel.
+> However, for changes originating within a Laravel application, other solutions like [owen-it/laravel-auditing](https://github.com/owen-it/laravel-auditing) may better suit your requirements.
 
 ## Installation
 
