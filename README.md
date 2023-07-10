@@ -25,6 +25,35 @@ This package comes with a migration to store your database changes. You can publ
 php artisan vendor:publish --provider="Esign\DatabaseAuditing\DatabaseAuditingServiceProvider" --tag="migrations"
 ```
 
+Running this command will publish the following migration:
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('audits', function (Blueprint $table) {
+            $table->id();
+            $table->string('event');
+            $table->morphs('auditable');
+            $table->json('old_data')->nullable();
+            $table->json('new_data')->nullable();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('audits');
+    }
+};
+```
+
 Next up, you can optionally publish the configuration file:
 ```bash
 php artisan vendor:publish --provider="Esign\DatabaseAuditing\DatabaseAuditingServiceProvider" --tag="config"
@@ -91,6 +120,13 @@ php artisan make:audit-trigger my_trigger
 ### Retrieving tracked changes
 
 After running the trigger migration, any modifications made to the associated table will be automatically monitored and stored in the `audits` table.
+
+Here is a representation of how audits are stored in the `audits` table based on different trigger events:
+| id | event | auditable_type | auditable_id | old_data | new_data |
+| --- | --- | --- | --- | --- | --- |
+| 1 | insert | post | 1 | NULL | {"title": "My Post"} |
+| 2 | update | post | 1 | {"title": "My Post"} | {"title": "My Updated Post"} |
+| 3 | delete | post | 1 | {"title": "My Post"} | NULL |
 
 To retrieve the recorded changes in your Laravel project, you can utilize the `Esign\DatabaseAuditing\Models\Audit` model provided by the package.
 Here's an example:
