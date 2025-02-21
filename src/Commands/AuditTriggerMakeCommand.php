@@ -40,6 +40,8 @@ class AuditTriggerMakeCommand extends TriggerMakeCommand
             ->event(TriggerEvent::from($triggerEvent))
             ->timing(TriggerTiming::from($triggerTiming))
             ->statement(function () use ($triggerEvent, $auditableType, $auditableId, $columnsToBeTracked) {
+                /** @var \Illuminate\Database\DatabaseManager */
+                $databaseManager = $this->laravel->make('db');
                 $auditTriggerStatement = new AuditTriggerStatement(
                     TriggerEvent::from($triggerEvent),
                     $auditableType,
@@ -47,7 +49,7 @@ class AuditTriggerMakeCommand extends TriggerMakeCommand
                     $columnsToBeTracked,
                 );
 
-                return (new MySqlGrammar())->compileAuditTriggerStatement($auditTriggerStatement);
+                return (new MySqlGrammar($databaseManager->connection()))->compileAuditTriggerStatement($auditTriggerStatement);
             });
 
         $this->writeMigration($trigger);
