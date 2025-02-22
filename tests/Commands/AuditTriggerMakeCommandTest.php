@@ -2,6 +2,7 @@
 
 namespace Esign\DatabaseAuditing\Tests\Commands;
 
+use PHPUnit\Framework\Attributes\Test;
 use Esign\DatabaseAuditing\Commands\MigrationCreator;
 use Esign\DatabaseAuditing\Models\Audit;
 use Esign\DatabaseAuditing\Tests\Support\Concerns\CleansPublishedMigrations;
@@ -26,7 +27,7 @@ class AuditTriggerMakeCommandTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_run_the_audit_trigger_command()
     {
         $this->mock(MigrationCreator::class, function ($mock) {
@@ -49,7 +50,7 @@ class AuditTriggerMakeCommandTest extends TestCase
         $auditTriggerCommand->assertSuccessful();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_database_trigger_when_the_command_is_executed()
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
@@ -67,7 +68,7 @@ class AuditTriggerMakeCommandTest extends TestCase
         $this->assertTrue(Schema::hasTrigger('audit_after_posts_update'));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_an_audit_using_an_update_event()
     {
         $post = Post::create(['title' => 'My Title', 'slug' => 'my-title']);
@@ -93,7 +94,7 @@ class AuditTriggerMakeCommandTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_an_audit_using_an_insert_event()
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
@@ -117,7 +118,7 @@ class AuditTriggerMakeCommandTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_an_audit_using_a_delete_event()
     {
         $post = Post::create(['title' => 'My Title', 'slug' => 'my-title']);
@@ -143,7 +144,7 @@ class AuditTriggerMakeCommandTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_run_the_audit_trigger_command_using_a_custom_name()
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
