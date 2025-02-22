@@ -2,15 +2,16 @@
 
 namespace Esign\DatabaseAuditing\Tests\Models;
 
+use PHPUnit\Framework\Attributes\Test;
 use Esign\DatabaseAuditing\Models\Audit;
 use Esign\DatabaseAuditing\Tests\Support\Models\Post;
 use Esign\DatabaseAuditing\Tests\TestCase;
 use Esign\DatabaseTrigger\Enums\TriggerEvent;
 
-class AuditTest extends TestCase
+final class AuditTest extends TestCase
 {
-    /** @test */
-    public function it_can_report_data_as_changed_correctly()
+    #[Test]
+    public function it_can_report_data_as_changed_correctly(): void
     {
         $audit = new Audit([
             'old_data' => ['slug' => 'abc'],
@@ -20,8 +21,8 @@ class AuditTest extends TestCase
         $this->assertTrue($audit->hasDataChanges('slug'));
     }
 
-    /** @test */
-    public function it_wont_report_data_as_changed_incorrectly()
+    #[Test]
+    public function it_wont_report_data_as_changed_incorrectly(): void
     {
         $audit = new Audit([
             'old_data' => ['slug' => 'abc'],
@@ -31,8 +32,8 @@ class AuditTest extends TestCase
         $this->assertFalse($audit->hasDataChanges('slug'));
     }
 
-    /** @test */
-    public function it_can_scope_by_event()
+    #[Test]
+    public function it_can_scope_by_event(): void
     {
         $post = Post::create(['title' => 'abc', 'slug' => 'abc']);
         $updatedAudit = Audit::create([
