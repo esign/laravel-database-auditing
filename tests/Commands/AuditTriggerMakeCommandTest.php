@@ -28,7 +28,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_can_run_the_audit_trigger_command()
+    public function it_can_run_the_audit_trigger_command(): void
     {
         $this->mock(MigrationCreator::class, function ($mock) {
             $mock->shouldReceive('createTrigger')->once();
@@ -51,7 +51,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_a_database_trigger_when_the_command_is_executed()
+    public function it_can_create_a_database_trigger_when_the_command_is_executed(): void
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
             triggerTable: 'posts',
@@ -69,7 +69,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_an_audit_using_an_update_event()
+    public function it_can_create_an_audit_using_an_update_event(): void
     {
         $post = Post::create(['title' => 'My Title', 'slug' => 'my-title']);
         $auditTriggerCommand = $this->makeAuditTrigger(
@@ -95,7 +95,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_an_audit_using_an_insert_event()
+    public function it_can_create_an_audit_using_an_insert_event(): void
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
             triggerTable: 'posts',
@@ -119,7 +119,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_can_create_an_audit_using_a_delete_event()
+    public function it_can_create_an_audit_using_a_delete_event(): void
     {
         $post = Post::create(['title' => 'My Title', 'slug' => 'my-title']);
         $auditTriggerCommand = $this->makeAuditTrigger(
@@ -145,7 +145,7 @@ class AuditTriggerMakeCommandTest extends TestCase
     }
 
     #[Test]
-    public function it_can_run_the_audit_trigger_command_using_a_custom_name()
+    public function it_can_run_the_audit_trigger_command_using_a_custom_name(): void
     {
         $auditTriggerCommand = $this->makeAuditTrigger(
             triggerName: 'my_trigger',

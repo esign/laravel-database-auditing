@@ -11,7 +11,7 @@ use Esign\DatabaseTrigger\Enums\TriggerEvent;
 class AuditTest extends TestCase
 {
     #[Test]
-    public function it_can_report_data_as_changed_correctly()
+    public function it_can_report_data_as_changed_correctly(): void
     {
         $audit = new Audit([
             'old_data' => ['slug' => 'abc'],
@@ -22,7 +22,7 @@ class AuditTest extends TestCase
     }
 
     #[Test]
-    public function it_wont_report_data_as_changed_incorrectly()
+    public function it_wont_report_data_as_changed_incorrectly(): void
     {
         $audit = new Audit([
             'old_data' => ['slug' => 'abc'],
@@ -33,7 +33,7 @@ class AuditTest extends TestCase
     }
 
     #[Test]
-    public function it_can_scope_by_event()
+    public function it_can_scope_by_event(): void
     {
         $post = Post::create(['title' => 'abc', 'slug' => 'abc']);
         $updatedAudit = Audit::create([
