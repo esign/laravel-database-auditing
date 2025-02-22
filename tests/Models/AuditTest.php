@@ -8,7 +8,7 @@ use Esign\DatabaseAuditing\Tests\Support\Models\Post;
 use Esign\DatabaseAuditing\Tests\TestCase;
 use Esign\DatabaseTrigger\Enums\TriggerEvent;
 
-class AuditTest extends TestCase
+final class AuditTest extends TestCase
 {
     #[Test]
     public function it_can_report_data_as_changed_correctly(): void

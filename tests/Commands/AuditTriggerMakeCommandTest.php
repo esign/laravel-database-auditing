@@ -15,7 +15,7 @@ use Esign\DatabaseTrigger\Facades\Schema;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Support\Composer;
 
-class AuditTriggerMakeCommandTest extends TestCase
+final class AuditTriggerMakeCommandTest extends TestCase
 {
     use MakesAuditTrigger;
     use CleansPublishedMigrations;
